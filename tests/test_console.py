@@ -17,6 +17,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from models.engine.file_storage import FileStorage
+from models import storage
 
 
 class TestConsole(unittest.TestCase):
@@ -231,6 +232,16 @@ class TestConsole(unittest.TestCase):
             self.consol.onecmd("User.update(" + my_id + ", name)")
             self.assertEqual(
                 "** value missing **\n", f.getvalue())
+
+    def test_z_create(self):
+        """Test alternate create command input"""
+        self.consol.onecmd('create State name="New_Mexico"')
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.consol.onecmd('all State')
+            val = f.getvalue()
+            self.assertFalse("New_Mexico" in val)
+            self.assertTrue("New Mexico" in val)
+
 
 if __name__ == "__main__":
     unittest.main()
