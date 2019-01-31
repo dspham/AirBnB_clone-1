@@ -42,16 +42,18 @@ class DBStorage():
                 cls: classname for the queried object
         """
         all_dict = {}
+        result = []
         if cls:
-            result = self.__session.query(cls).all()
+            cls_dict = {"User": User, "State": State, "City": City,
+                        "Amenity": Amenity, "Place": Place, "Review": Review}
+            result = self.__session.query(cls_dict.get(cls)).all()
         else:
-            result = []
             result += self.__session.query(User).all()
             result += self.__session.query(State).all()
             result += self.__session.query(City).all()
             result += self.__session.query(Amenity).all()
             result += self.__session.query(Place).all()
-            result += self.__session.query(Review).all()
+            result += self.__session.query(Review).all() 
         for v in result:
             k = '{}.{}'.format(v.__class__.__name__, v.id)
             all_dict[k] = v
@@ -80,3 +82,10 @@ class DBStorage():
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         self.__session = scoped_session(session_factory)
+
+    def close(self):
+        """call the remove method on the private
+        session attribute self.__session
+        """
+        if self.__session:
+            self.__session.remove()
