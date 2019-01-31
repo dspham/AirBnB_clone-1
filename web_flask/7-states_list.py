@@ -11,7 +11,8 @@ def state_list():
     """display a html page of states from the database
     """
     states_list = storage.all("State").values()
-    return render_template("7-states_list.html", states_list=states_list)
+    print(states_list)
+    return render_template("7-states_list.html", states=states_list)
 
 
 @app.teardown_appcontext
